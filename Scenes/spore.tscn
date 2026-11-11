@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bgp41iovraqp8"]
+
+[ext_resource type="Script" uid="uid://ch54ybg3kmb5b" path="res://Scripts/spore.gd" id="1_x4f8v"]
+[ext_resource type="Texture2D" uid="uid://crq8er58eo5fb" path="res://Sprites/SporeSprites/spore.png" id="2_x4f8v"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gyhxy"]
+radius = 0.0
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=517755550 groups=["Moss"]]
+z_index = 1
+scale = Vector2(0.1, 0.1)
+collision_layer = 3
+script = ExtResource("1_x4f8v")
+gravity = 15
+max_velocity = 400
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=939030172]
+shape = SubResource("CircleShape2D_gyhxy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=822238221]
+texture_filter = 1
+scale = Vector2(10, 10)
+texture = ExtResource("2_x4f8v")

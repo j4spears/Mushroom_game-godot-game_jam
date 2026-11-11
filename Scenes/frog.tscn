@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://c8x54v2m1lo0o"]
+
+[ext_resource type="Script" uid="uid://ckuhmqlgyvdys" path="res://Scripts/frog.gd" id="1_4ygq6"]
+[ext_resource type="Texture2D" uid="uid://ctplk6rex3qqy" path="res://Sprites/frog_sprite.png" id="2_4ygq6"]
+[ext_resource type="AudioStream" uid="uid://ccfs86jwr1vmn" path="res://Sounds/frog lick.wav" id="3_c3muq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gyhxy"]
+
+[sub_resource type="Animation" id="Animation_c3muq"]
+resource_name = "EAT"
+length = 0.26666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.033333335, 0.06666667, 0.10000001, 0.13333334, 0.16666667, 0.20000002, 0.2333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 0]
+}
+
+[sub_resource type="Animation" id="Animation_xvrdk"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_anyvr"]
+_data = {
+&"EAT": SubResource("Animation_c3muq"),
+&"RESET": SubResource("Animation_xvrdk")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0ywt8"]
+radius = 60.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gyhxy"]
+size = Vector2(24, 290)
+
+[sub_resource type="Gradient" id="Gradient_6t5aa"]
+offsets = PackedFloat32Array(0.009615385, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4ygq6"]
+gradient = SubResource("Gradient_6t5aa")
+fill = 1
+fill_from = Vector2(0.5068182, 0.42045453)
+fill_to = Vector2(0.18863636, 0.4568182)
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1218093170]
+scale = Vector2(0.25, 0.25)
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_4ygq6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2068986223]
+shape = SubResource("CircleShape2D_gyhxy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1888808825]
+texture_filter = 1
+position = Vector2(6.7762636e-21, 4.7683716e-07)
+scale = Vector2(3.45, 3.45)
+texture = ExtResource("2_4ygq6")
+offset = Vector2(0, -48)
+hframes = 8
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=485344485]
+libraries/ = SubResource("AnimationLibrary_anyvr")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=2133889731]
+position = Vector2(0, -36)
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=23135753]
+shape = SubResource("CircleShape2D_0ywt8")
+
+[node name="SiteArea" type="Area2D" parent="." unique_id=1536886969]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SiteArea" unique_id=358202266]
+position = Vector2(0, -135)
+shape = SubResource("RectangleShape2D_gyhxy")
+
+[node name="DazedTimer" type="Timer" parent="." unique_id=1348922470]
+wait_time = 0.75
+one_shot = true
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=724468314]
+position = Vector2(0, -44)
+scale = Vector2(8.75, 8.75)
+energy = 0.2
+texture = SubResource("GradientTexture2D_4ygq6")
+
+[node name="EatAudio" type="AudioStreamPlayer2D" parent="." unique_id=427833204]
+stream = ExtResource("3_c3muq")
+
+[connection signal="area_entered" from="HurtBox" to="." method="_on_hurt_box_area_entered"]
+[connection signal="body_entered" from="SiteArea" to="." method="_on_site_area_body_entered"]
+[connection signal="timeout" from="DazedTimer" to="." method="_on_dazed_timer_timeout"]

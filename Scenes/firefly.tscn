@@ -1,0 +1,149 @@
+[gd_scene format=3 uid="uid://cpgxlmecoft0x"]
+
+[ext_resource type="Script" uid="uid://dot3pp3s5wevr" path="res://Scripts/firefly.gd" id="1_d6ncm"]
+[ext_resource type="Texture2D" uid="uid://bxhx6fb26hx5r" path="res://Sprites/temp firefly.png" id="2_wh1ru"]
+[ext_resource type="AudioStream" uid="uid://dikt6nfthb3d1" path="res://Sounds/buzz.wav" id="3_wh1ru"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gyhxy"]
+radius = 48.0
+
+[sub_resource type="Animation" id="Animation_cgv3b"]
+resource_name = "FLY"
+length = 0.06666667
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.03333334),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_cgkpf"]
+resource_name = "IDLE"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_1tt1u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1d8bi"]
+_data = {
+&"FLY": SubResource("Animation_cgv3b"),
+&"IDLE": SubResource("Animation_cgkpf"),
+&"RESET": SubResource("Animation_1tt1u")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0ywt8"]
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_imi1r"]
+radius = 372.1935
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_so7uy"]
+radius = 56.0
+
+[sub_resource type="Gradient" id="Gradient_d6ncm"]
+offsets = PackedFloat32Array(0.75961536, 1)
+colors = PackedColorArray(0.3586181, 0.5502648, 0.23181036, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gyhxy"]
+gradient = SubResource("Gradient_d6ncm")
+fill = 1
+fill_from = Vector2(0.49772727, 0.50454545)
+fill_to = Vector2(0.875, 0.425)
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1933854703]
+scale = Vector2(0.25, 0.25)
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_d6ncm")
+chase_speed = 250
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1502484041]
+position = Vector2(-8, 40)
+shape = SubResource("CircleShape2D_gyhxy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=137972236]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = ExtResource("2_wh1ru")
+offset = Vector2(-2.97, 10.61)
+hframes = 3
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D" unique_id=504577705]
+libraries/ = SubResource("AnimationLibrary_1d8bi")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1210919944]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1069754330]
+position = Vector2(-8, 0)
+shape = SubResource("CircleShape2D_0ywt8")
+
+[node name="SightArea" type="Area2D" parent="." unique_id=1587193011]
+position = Vector2(0, 76)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SightArea" unique_id=384252928]
+shape = SubResource("CircleShape2D_imi1r")
+debug_color = Color(0, 0.6, 0.69803923, 0)
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=2062162124]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1534397889]
+position = Vector2(-8, 40)
+shape = SubResource("CircleShape2D_so7uy")
+
+[node name="DazedTimer" type="Timer" parent="Hurtbox" unique_id=1729359649]
+one_shot = true
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1355245231]
+position = Vector2(16, 40)
+scale = Vector2(-16.01, -16.01)
+energy = 0.4
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_gyhxy")
+
+[node name="PointLight2D2" type="PointLight2D" parent="." unique_id=621171687]
+position = Vector2(16, 36.000004)
+scale = Vector2(-16.01, -16.01)
+energy = 0.5
+texture = SubResource("GradientTexture2D_gyhxy")
+
+[node name="BuzzAudio" type="AudioStreamPlayer2D" parent="." unique_id=647241483]
+stream = ExtResource("3_wh1ru")
+volume_db = 6.0
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="timeout" from="Hurtbox/DazedTimer" to="." method="_on_dazed_timer_timeout"]

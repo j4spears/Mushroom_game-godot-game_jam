@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://bjx8edk2ekx4j"]
+
+[ext_resource type="Texture2D" uid="uid://cjynoarif6p4g" path="res://Sprites/MushroomSprites/bouncy_shroom_sprite.png" id="1_5ivm6"]
+[ext_resource type="Script" uid="uid://nufiknlnuth4" path="res://Scripts/bouncy_mushroom.gd" id="2_5ivm6"]
+[ext_resource type="AudioStream" uid="uid://cx6jpclcntb70" path="res://Sounds/bounce_sfx.wav" id="3_jje4l"]
+
+[sub_resource type="Animation" id="Animation_jje4l"]
+resource_name = "BOUNCE"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.1, 0.2, 0.2801524, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 0, 0]
+}
+
+[sub_resource type="Animation" id="Animation_6dtbi"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bewk4"]
+_data = {
+&"BOUNCE": SubResource("Animation_jje4l"),
+&"RESET": SubResource("Animation_6dtbi")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gyhxy"]
+radius = 11.0
+height = 24.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ivm6"]
+size = Vector2(32, 1)
+
+[node name="Sprite2D" type="Sprite2D" unique_id=35142561]
+texture_filter = 1
+texture = ExtResource("1_5ivm6")
+offset = Vector2(0, -15.87)
+hframes = 4
+script = ExtResource("2_5ivm6")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=579257157]
+libraries/ = SubResource("AnimationLibrary_bewk4")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1087745478]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=526293481]
+position = Vector2(0, -18)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_gyhxy")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1714047610]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1437300384]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_5ivm6")
+
+[node name="BounceDuration" type="Timer" parent="." unique_id=1020834798]
+wait_time = 0.2
+
+[node name="BounceSfx" type="AudioStreamPlayer2D" parent="." unique_id=2107942738]
+stream = ExtResource("3_jje4l")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="timeout" from="BounceDuration" to="." method="_on_bounce_duration_timeout"]
